@@ -17,9 +17,12 @@ defmodule RclEx do
   def rcl_get_zero_initialized_context do
       raise "NIF rcl_get_zero_initialized_context/0 not implemented"
   end
-  def nif_read_context(_a) do
-      raise "NIF nif_read_context/1 is not implemented"
+  def rcl_init_options_fini(_a) do
+    raise "NIF rcl_init_options_init/1 is not implemented"
   end
+  #def nif_read_context(_a) do
+  #    raise "NIF nif_read_context/1 is not implemented"
+  #end
   @doc """
       return {:ok,rcl_ret_t}
       arguments...(
@@ -68,9 +71,7 @@ defmodule RclEx do
   def rcl_node_init(_a,_b,_c,_d,_e) do
       raise "NIF rcl_node_init/5 not implemented"
   end
-  def express_node_init do
-      raise "sorry"
-  end
+  
   @doc """
       return rcl_ret_t 
       argument...rcl_node_t
@@ -207,6 +208,7 @@ conn = RclEx.rcl_get_zero_initialized_context()
 init_op = RclEx.rcl_get_zero_initialized_init_options()
 RclEx.rcl_init_options_init(init_op)
 RclEx.rcl_init_with_null(init_op,conn)
+RclEx.rcl_init_options_fini(init_op)
 
 node_op = RclEx.rcl_node_get_default_options()
 node = RclEx.rcl_get_zero_initialized_node()

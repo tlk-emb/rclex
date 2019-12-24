@@ -7,7 +7,7 @@ extern "C"
 #include "../include/init_nif.h"
 #include "../include/total_nif.h"
 #include <stdio.h>
-#include "./arguments_impl.h"
+
 #include "rcl/rcl.h"    //include先からcontext.hにたどり着く
 #include "rcl/context.h"
 #include "rcl/init_options.h"
@@ -130,7 +130,7 @@ ERL_NIF_TERM nif_rcl_init_with_null(ErlNifEnv* env, int argc, const ERL_NIF_TERM
     printf("finished rcl_init\n");
     return ret;
 }
-
+/*
 //コンテキストの中身を見る関数
 ERL_NIF_TERM nif_read_context(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]){
     rcl_context_t* res_context;
@@ -138,6 +138,30 @@ ERL_NIF_TERM nif_read_context(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[
 	    return enif_make_badarg(env);
     }
     return enif_make_int(env,res_context->global_arguments.impl->log_level);
+}
+*/
+
+ERL_NIF_TERM nif_rcl_init_options_fini(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]){
+    if(argc != 1){
+        return enif_make_badarg(env);
+    }
+    rcl_ret_t* res;
+    ERL_NIF_TERM ret;
+
+    rcl_init_options_t* res_init_options;
+    
+    if(!enif_get_resource(env,argv[0],rt_init_options,(void**)&res_init_options)){
+        return enif_make_badarg(env);
+    }
+     
+    res = enif_alloc_resource(rt_ret,sizeof(rcl_ret_t));
+    if(res == NULL) return enif_make_badarg(env);
+    ret = enif_make_resource(env,res);
+    enif_release_resource(res);
+    *res = rcl_init_options_fini(res_init_options);
+
+    return ret;
+
 }
 
 ERL_NIF_TERM nif_rcl_shutdown(ErlNifEnv* env, int argc, const ERL_NIF_TERM argv[]){
